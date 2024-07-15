@@ -29,11 +29,11 @@ public enum ApiResponseCode {
 
   // 200 OK
   READ_SUCCESS(HttpStatus.OK, true, "조회 성공"),
-  UPDATE_SUCCESS(HttpStatus.OK, true, "사용자 정보 수정 성공"),
-  LOGIN_SUCCESS(HttpStatus.OK, true, "사용자 로그인 성공"),
+  UPDATE_SUCCESS(HttpStatus.OK, true, "수정 성공"),
+  LOGIN_SUCCESS(HttpStatus.OK, true, "로그인 성공"),
 
   // 201 Created
-  CREATE_SUCCESS(HttpStatus.CREATED, true, "사용자 생성 성공"),
+  CREATE_SUCCESS(HttpStatus.CREATED, true, "생성 성공"),
   ;
 
   private final HttpStatus httpStatus;
