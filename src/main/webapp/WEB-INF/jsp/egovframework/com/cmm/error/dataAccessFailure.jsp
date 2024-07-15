@@ -6,33 +6,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<title><spring:message code="title.html"/></title>
-<link href="<c:url value='/css/egovframework/com/com.css' />" rel="stylesheet" type="text/css" />
+    <meta charset="utf-8">
+    <title><spring:message code="title.html"/></title>
+    <link href="<c:url value='/css/egovframework/com/com.css' />" rel="stylesheet" type="text/css" />
 
-<script language="javascript">
-function fncGoAfterErrorPage(){
-    history.back(-2);
-}
-</script>
+    <script language="javascript">
+      function fncGoAfterErrorPage(){
+        history.back(-2);
+      }
+    </script>
 </head>
 <body>
 <div style="width: 1000px; margin: 50px auto 50px;">
-	<p style="font-size: 18px; color: #000; margin-bottom: 10px; "><img src="<c:url value='/images/egovframework/com/cmm/er_logo.jpg' />" width="379" height="57" /></p>
-	<div style="border: ppx solid #666; padding: 20px;">
-		
-		<p style="color:red; margin-bottom: 8px; ">${pageTitle}<br /></p>
+    <p style="font-size: 18px; color: #000; margin-bottom: 10px; "><img src="<c:url value='/images/egovframework/com/cmm/er_logo.jpg' />" width="379" height="57" alt="" /></p>
+    <div style="border: 1px solid #666; padding: 20px;">
 
-		<div class="boxType1" style="width: 700px;">
-			<div class="box">
-				<div class="error">
-					<p class="title"><spring:message code="comCmmErr.dataAccessFailure.title" /></p><!-- 데이터 처리 중 오류가 발생하였습니다! -->
-					<p class="cont mb20">${pageTitle}<br /></p>
-					<span class="btn_style1 blue"><a href="javascript:fncGoAfterErrorPage();"><spring:message code="comCmmErr.button" /><!-- 이전 페이지 --></a></span>
-				</div>
-			</div>
-		</div>
-	</div>
+        <p style="color:red; margin-bottom: 8px; ">${pageTitle}<br /></p>
+
+        <div class="boxType1" style="width: 700px;">
+            <div class="box">
+                <div class="error">
+                    <p class="title"><spring:message code="comCmmErr.dataAccessFailure.title" /></p><!-- 데이터 처리 중 오류가 발생하였습니다! -->
+                    <p class="cont mb20">${pageTitle}<br /></p>
+
+                    <p>Exception: ${exception.getClass().getSimpleName()}</p>
+                    <br/>
+                    <p>Message: ${exception.getMessage()}</p>
+                    <br/>
+                    <p>Cause: ${exception.getCause()}</p>
+                    <br/>
+
+                    <span class="btn_style1 blue"><a href="javascript:fncGoAfterErrorPage();"><spring:message code="comCmmErr.button" /><!-- 이전 페이지 --></a></span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 </body>
