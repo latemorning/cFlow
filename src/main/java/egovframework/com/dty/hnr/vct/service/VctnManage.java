@@ -1,4 +1,4 @@
-package egovframework.com.cfl.dty.hnr.vct.service;
+package egovframework.com.dty.hnr.vct.service;
 
 import egovframework.com.cmm.ComDefaultVO;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,6 @@
-package egovframework.com.cfl.dty.hnr.vct.web;
+package egovframework.com.dty.hnr.vct.web;
 
-import egovframework.com.cfl.dty.hnr.vct.service.VctnManage;
+import egovframework.com.dty.hnr.vct.service.VctnManage;
 import egovframework.com.cmm.util.ApiResponse;
 import egovframework.com.cmm.util.ApiResponseCode;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +24,7 @@ public class VctnManageController {
    * @return
    * @throws Exception
    */
-  @GetMapping(value = "/cfl/dty/hnr/vct/vctnManageItem/{itemSeq}")
+  @GetMapping(value = "/dty/hnr/vct/vctnManageTest/{itemSeq}")
   public ApiResponse<Object> vctnManageItem(@PathVariable Integer itemSeq) throws Exception {
 
     VctnManage vctnManage = new VctnManage();
@@ -34,5 +34,7 @@ public class VctnManageController {
 
     return ApiResponse.success(new Object[]{vctnManage}, ApiResponseCode.READ_SUCCESS.getMessage());
   }
+
+
 
 }
