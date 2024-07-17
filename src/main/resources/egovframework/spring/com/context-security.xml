@@ -62,7 +62,7 @@
 
 	<egov-security:secured-object-config id="securedObjectConfig"
 		sqlHierarchicalRoles="
-			SELECT a.CHLDRN_ROLE as child, a.PARNTS_ROLE parent
+			SELECT DISTINCT a.CHLDRN_ROLE as child, a.PARNTS_ROLE parent
 			FROM COMTNROLES_HIERARCHY a LEFT JOIN COMTNROLES_HIERARCHY b on (a.CHLDRN_ROLE = b.PARNTS_ROLE)"
 		sqlRolesAndUrl="
 			SELECT a.ROLE_PTTRN url, b.AUTHOR_CODE authority
