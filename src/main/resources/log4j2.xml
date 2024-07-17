@@ -1,30 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE xml>
 <Configuration>
-    <Appenders>
-        <Console name="console" target="SYSTEM_OUT">
-            <PatternLayout pattern="[log4j]%d %5p [%c] %m%n" />
-        </Console>
-    </Appenders>
-    <Loggers>
-        <Logger name="java.sql" level="DEBUG" additivity="false">
-            <AppenderRef ref="console" />
-        </Logger>
-        <Logger name="egovframework" level="DEBUG" additivity="false">
-            <AppenderRef ref="console" />
-        </Logger>
-        <Logger name="org.egovframe" level="DEBUG" additivity="false">
-            <AppenderRef ref="console" />
-        </Logger>
-		<!-- log SQL with timing information, post execution -->
-	    <Logger name="jdbc.sqltiming" level="DEBUG" additivity="false">
-	        <AppenderRef ref="console" />
-	    </Logger>
-	    <Logger name="org.springframework" level="INFO" additivity="false">
-	        <AppenderRef ref="console" />
-	    </Logger>
-        <Root level="INFO">
-            <AppenderRef ref="console" />
-        </Root>
-    </Loggers>
+  <Appenders>
+    <Console name="console" target="SYSTEM_OUT">
+      <PatternLayout pattern="[log4j]%d %5p [%c] %m%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Logger name="java.sql" level="ERROR" additivity="false">
+      <AppenderRef ref="console"/>
+    </Logger>
+    <Logger name="jdbc.sqlonly" level="ERROR" additivity="false">
+      <AppenderRef ref="console"/>
+    </Logger>
+    <!-- log SQL with timing information, post execution -->
+    <Logger name="jdbc.sqltiming" level="INFO" additivity="false">
+      <AppenderRef ref="console"/>
+    </Logger>
+    <Logger name="jdbc.audit" level="WARN" additivity="false">
+      <AppenderRef ref="console"/>
+    </Logger>
+    <Logger name="jdbc.resultset" level="WARN" additivity="false">
+      <AppenderRef ref="console"/>
+    </Logger>
+    <Logger name="jdbc.resultSettable" level="INFO" additivity="false">
+      <AppenderRef ref="console"/>
+    </Logger>
+
+    <Logger name="egovframework" level="DEBUG" additivity="false">
+      <AppenderRef ref="console"/>
+    </Logger>
+    <Logger name="org.egovframe" level="DEBUG" additivity="false">
+      <AppenderRef ref="console"/>
+    </Logger>
+    <Logger name="org.springframework" level="INFO" additivity="false">
+      <AppenderRef ref="console"/>
+    </Logger>
+
+
+    <logger name="egovframework.com.sym.log.lgm.service.impl.SysLogDAO" level="OFF"/>
+    <logger name="egovframework.com.sym.log.wlg.service.impl.WebLogDAO.logInsertWebLog" level="OFF"/>
+
+
+    <Root level="INFO">
+      <AppenderRef ref="console"/>
+    </Root>
+  </Loggers>
 </Configuration>
