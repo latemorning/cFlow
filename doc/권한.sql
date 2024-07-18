@@ -188,3 +188,37 @@ web-000006, 우편번호,      /sym/ccm/zip/.*\.do.*   우편번호관리에 대
 web-000007, 로그인이미지,  /uss/ion/lsi/.*\.do.*   로그인이미지관리에 대한 접근 제한 롤,   URL,     1
  */
 
+SELECT MENU_NO AS MENU_NO , MENU_ORDR AS MENU_ORDR , MENU_NM AS MENU_NM , UPPER_MENU_NO AS
+UPPER_MENU_ID , MENU_DC AS MENU_DC , RELATE_IMAGE_PATH AS RELATE_IMAGE_PATH , RELATE_IMAGE_NM
+AS RELATE_IMAGE_NM , PROGRM_FILE_NM AS PROGRM_FILE_NM FROM COMTNMENUINFO
+WHERE binary(MENU_NM) like CONCAT('%', '', '%')
+and UPPER_MENU_NO = 10000000
+;
+
+-- 메뉴 권한 추가
+ INSERT INTO COMTNMENUCREATDTLS ( AUTHOR_CODE ,MENU_NO )
+			VALUES (  'ROLE_MNGM', 13000000 );
+
+SELECT next_id FROM COMTECOPSEQ WHERE table_name = 'SYSLOG_ID';
+UPDATE COMTECOPSEQ SET next_id = 2341 WHERE table_name = 'SYSLOG_ID';
+
+# 	<select id="selectMainMenuLeft" parameterType="egovframework.com.sym.mnu.mpm.service.MenuManageVO" resultType="egovMap">
+
+			SELECT
+			       B.MENU_NO           AS MENU_NO
+				 , B.MENU_ORDR         AS MENU_ORDR
+				 , B.MENU_NM           AS MENU_NM
+				 , B.UPPER_MENU_NO     AS UPPER_MENU_ID
+				 , B.RELATE_IMAGE_PATH AS RELATE_IMAGE_PATH
+				 , B.RELATE_IMAGE_NM   AS RELATE_IMAGE_NM
+				 , (SELECT C.URL FROM COMTNPROGRMLIST C WHERE B.PROGRM_FILE_NM = C.PROGRM_FILE_NM) AS CHK_URL
+			FROM   COMTNMENUCREATDTLS A, COMTNMENUINFO B
+			WHERE  A.MENU_NO  = B.MENU_NO
+			AND    A.AUTHOR_CODE = (SELECT AUTHOR_CODE from COMTNEMPLYRSCRTYESTBS
+	                                WHERE  SCRTY_DTRMN_TRGET_ID = 'USRCNFRM_00000000003')
+			ORDER BY B.MENU_ORDR;
+
+# 	</select>
+
+
+
