@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE xml>
-<Configuration>
+<Configuration status="debug" monitorInterval="5">
   <Appenders>
     <Console name="console" target="SYSTEM_OUT">
       <PatternLayout pattern="[log4j]%d %5p [%c] %m%n"/>
