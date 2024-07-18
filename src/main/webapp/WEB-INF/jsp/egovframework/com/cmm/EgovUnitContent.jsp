@@ -35,6 +35,36 @@
 }
 </style>
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/cmm/jqueryui.css' />">
+
+	<script type="module">
+		import {ref, createApp, onMounted} from "https://unpkg.com/vue@3/dist/vue.esm-browser.js";
+
+		const app = {
+			setup() {
+
+				onMounted(() => {
+
+					// alert(document.title)
+				})
+
+				return {
+					message: "Hello Vue!",
+				}
+			},
+		}
+
+		// data() {
+		//     return {
+		//         message: 'Hello Vue!'
+		//     }
+		// },
+
+		createApp(app).mount('#app')
+	</script>
+
+
+
+
 <script src="<c:url value='/js/egovframework/com/cmm/jquery.js' />"></script>
 <script src="<c:url value='/js/egovframework/com/cmm/jqueryui.js' />"></script>
 <script type="text/javascript">
@@ -67,6 +97,11 @@
 </script>
 </head>
 <body>
+
+<div id="app">
+	{{message}}
+</div>
+
 	<c:if test="${loginVO != null}">
 		${loginVO.name}(${loginVO.id})<spring:message code="comCmm.unitContent.2"/> <a href="${pageContext.request.contextPath }/uat/uia/actionLogout.do"><spring:message code="comCmm.unitContent.3"/></a>
 		<!--
