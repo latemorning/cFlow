@@ -21,7 +21,7 @@ public class MenuManageVO{
 
    /** 메뉴정보 */
    /** 메뉴번호 */
-   private   int      menuNo;
+   private   long      menuNo;
    /** 메뉴순서 */
    private   int      menuOrdr;
    /** 메뉴명 */
@@ -72,14 +72,14 @@ public class MenuManageVO{
 	 * menuNo attribute를 리턴한다.
 	 * @return int
 	 */
-	public int getMenuNo() {
+	public long getMenuNo() {
 		return menuNo;
 	}
 	/**
 	 * menuNo attribute 값을 설정한다.
 	 * @param menuNo int
 	 */
-	public void setMenuNo(int menuNo) {
+	public void setMenuNo(long menuNo) {
 		this.menuNo = menuNo;
 	}
 	/**

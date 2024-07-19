@@ -2,8 +2,12 @@ package egovframework.com.sym.mnu.mpm.web;
 
 import java.util.List;
 
+import java.util.Optional;
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
+import org.egovframe.rte.fdl.cmmn.exception.EgovBizException;
+import org.egovframe.rte.psl.dataaccess.util.EgovMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -22,12 +26,10 @@ import org.egovframe.rte.fdl.property.EgovPropertyService;
 
 /**
  * 메인메뉴 해당링크 처리를 하는 비즈니스 구현 클래스
- * @author 개발환경 개발팀 이용
- * @since 2009.06.01
- * @version 1.0
- * @see
  *
- * <pre>
+ * @author 개발환경 개발팀 이용
+ * @version 1.0
+ * @see <pre>
  * << 개정이력(Modification Information) >>
  *
  *   수정일      수정자           수정내용
@@ -37,49 +39,78 @@ import org.egovframe.rte.fdl.property.EgovPropertyService;
  *   2015.06.19  조정국          미인증사용자에 대한 보안처리
  *   2018.10.12  이정은          메인페이지 통합(업무, 기업, 일반)
  * </pre>
+ * @since 2009.06.01
  */
 
 @Controller
 public class EgovMainMenuManageController {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(EgovMainMenuManageController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EgovMainMenuManageController.class);
 
-	/** EgovPropertyService */
+    /**
+     * EgovPropertyService
+     */
     @Resource(name = "propertiesService")
     protected EgovPropertyService propertiesService;
 
-    /** EgovMenuManageService */
-	@Resource(name = "meunManageService")
+    /**
+     * EgovMenuManageService
+     */
+    @Resource(name = "meunManageService")
     private EgovMenuManageService menuManageService;
 
     /** EgovFileMngService */
-	//@Resource(name="EgovFileMngService")
-	//private EgovFileMngService fileMngService;
+    //@Resource(name="EgovFileMngService")
+    //private EgovFileMngService fileMngService;
 
     /** EgovFileMngUtil */
-	//@Resource(name="EgovFileMngUtil")
-	//private EgovFileMngUtil fileUtil;
+    //@Resource(name="EgovFileMngUtil")
+    //private EgovFileMngUtil fileUtil;
 
     /*### 메인작업 ###*/
     /*Main Index 조회*/
+
     /**
      * Main메뉴의 Index를 조회한다.
-     * @param menuNo  String
-     * @param chkURL  String
+     *
+     * @param menuNo String
+     * @param chkURL String
      * @return 출력페이지정보 "menu_index"
-     * @exception Exception
+     * @throws Exception
      */
-    @RequestMapping(value="/sym/mnu/mpm/EgovMainMenuIndex.do")
+    @RequestMapping(value = "/sym/mnu/mpm/EgovMainMenuIndex.do")
     public String selectMainMenuIndex(
-    		@ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
-    		@RequestParam("menuNo") String menuNo,
-    		@RequestParam("chkURL") String chkURL,
-    		ModelMap model)
+            @ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
+            @RequestParam(value = "menuNo", required = false) String menuNo,
+            @RequestParam(value = "chkURL", required = false) String chkURL,
+            ModelMap model)
             throws Exception {
 
-    	int iMenuNo = Integer.parseInt(menuNo);
-    	menuManageVO.setMenuNo(iMenuNo);
-    	//menuManageVO.setTempValue(chkURL);
+        if (StringUtils.isEmpty(menuNo)) {
+
+            LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+
+            menuManageVO.setTmpId(user == null ? "" : EgovStringUtil.isNullToString(user.getId()));
+            menuManageVO.setTmpPassword(user == null ? "" : EgovStringUtil.isNullToString(user.getPassword()));
+            menuManageVO.setTmpUserSe(user == null ? "" : EgovStringUtil.isNullToString(user.getUserSe()));
+            menuManageVO.setTmpName(user == null ? "" : EgovStringUtil.isNullToString(user.getName()));
+            menuManageVO.setTmpEmail(user == null ? "" : EgovStringUtil.isNullToString(user.getEmail()));
+            menuManageVO.setTmpOrgnztId(user == null ? "" : EgovStringUtil.isNullToString(user.getOrgnztId()));
+            menuManageVO.setTmpUniqId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
+
+            List<?> list_headmenu = menuManageService.selectMainMenuHead(menuManageVO);
+
+            EgovMap m = (EgovMap) list_headmenu.stream().findFirst().orElseThrow(EgovBizException::new);
+
+            menuNo = String.valueOf(m.get("menuNo"));
+
+            LOGGER.info("menuNo={}", menuNo);
+
+        }
+
+        long iMenuNo = Integer.parseInt(menuNo);
+        menuManageVO.setMenuNo(iMenuNo);
+        menuManageVO.setTempValue(chkURL);
         model.addAttribute("resultVO", menuManageVO);
 
         return "egovframework/com/menu_index";
@@ -87,172 +118,176 @@ public class EgovMainMenuManageController {
 
     /**
      * Head메뉴를 조회한다.
+     *
      * @param menuManageVO MenuManageVO
      * @return 출력페이지정보 "head"
-     * @exception Exception
+     * @throws Exception
      */
-    @RequestMapping(value="/sym/mnu/mpm/EgovMainMenu.do")
+    @RequestMapping(value = "/sym/mnu/mpm/EgovMainMenu.do")
     public String selectMainMenu(
-    		@ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
-    		ModelMap model)
+            @ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
+            ModelMap model)
             throws Exception {
 
-    	LoginVO user =
-			(LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+        LoginVO user =
+                (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
 
-    	menuManageVO.setTmpId(user == null ? "" : EgovStringUtil.isNullToString(user.getId()));
-    	menuManageVO.setTmpPassword(user == null ? "" : EgovStringUtil.isNullToString(user.getPassword()));
-    	menuManageVO.setTmpUserSe(user == null ? "" : EgovStringUtil.isNullToString(user.getUserSe()));
-    	menuManageVO.setTmpName(user == null ? "" : EgovStringUtil.isNullToString(user.getName()));
-    	menuManageVO.setTmpEmail(user == null ? "" : EgovStringUtil.isNullToString(user.getEmail()));
-    	menuManageVO.setTmpOrgnztId(user == null ? "" : EgovStringUtil.isNullToString(user.getOrgnztId()));
-    	menuManageVO.setTmpUniqId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
+        menuManageVO.setTmpId(user == null ? "" : EgovStringUtil.isNullToString(user.getId()));
+        menuManageVO.setTmpPassword(user == null ? "" : EgovStringUtil.isNullToString(user.getPassword()));
+        menuManageVO.setTmpUserSe(user == null ? "" : EgovStringUtil.isNullToString(user.getUserSe()));
+        menuManageVO.setTmpName(user == null ? "" : EgovStringUtil.isNullToString(user.getName()));
+        menuManageVO.setTmpEmail(user == null ? "" : EgovStringUtil.isNullToString(user.getEmail()));
+        menuManageVO.setTmpOrgnztId(user == null ? "" : EgovStringUtil.isNullToString(user.getOrgnztId()));
+        menuManageVO.setTmpUniqId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
 
-    	List<?> list_headmenu = menuManageService.selectMainMenuHead(menuManageVO);
+        List<?> list_headmenu = menuManageService.selectMainMenuHead(menuManageVO);
         model.addAttribute("list_headmenu", list_headmenu);
-		if (!(user == null ? "" : EgovStringUtil.isNullToString(user.getId())).equals("")) {
-        	// 메인 페이지 이동
-	    		return "egovframework/com/EgovMainView";
+        if (!(user == null ? "" : EgovStringUtil.isNullToString(user.getId())).equals("")) {
+            // 메인 페이지 이동
+            return "egovframework/com/EgovMainView";
         } else {
-        	// 오류 페이지 이동
-        	return "egovframework/com/cmm/error/egovError";
+            // 오류 페이지 이동
+            return "egovframework/com/cmm/error/egovError";
         }
     }
 
     /**
      * Head메뉴를 조회한다.
+     *
      * @param menuManageVO MenuManageVO
      * @return 출력페이지정보  "main_head"
-     * @exception Exception
+     * @throws Exception
      */
-    @RequestMapping(value="/sym/mnu/mpm/EgovMainMenuHead.do")
+    @RequestMapping(value = "/sym/mnu/mpm/EgovMainMenuHead.do")
     public String selectMainMenuHead(
-    		@ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
-    		ModelMap model)
+            @ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
+            ModelMap model)
             throws Exception {
 
-    	LoginVO user =
-			(LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+        LoginVO user =
+                (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
 
-    	menuManageVO.setTmpId(user == null ? "" : EgovStringUtil.isNullToString(user.getId()));
-    	menuManageVO.setTmpPassword(user == null ? "" : EgovStringUtil.isNullToString(user.getPassword()));
-    	menuManageVO.setTmpUserSe(user == null ? "" : EgovStringUtil.isNullToString(user.getUserSe()));
-    	menuManageVO.setTmpName(user == null ? "" : EgovStringUtil.isNullToString(user.getName()));
-    	menuManageVO.setTmpEmail(user == null ? "" : EgovStringUtil.isNullToString(user.getEmail()));
-    	menuManageVO.setTmpOrgnztId(user == null ? "" : EgovStringUtil.isNullToString(user.getOrgnztId()));
-    	menuManageVO.setTmpUniqId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
+        menuManageVO.setTmpId(user == null ? "" : EgovStringUtil.isNullToString(user.getId()));
+        menuManageVO.setTmpPassword(user == null ? "" : EgovStringUtil.isNullToString(user.getPassword()));
+        menuManageVO.setTmpUserSe(user == null ? "" : EgovStringUtil.isNullToString(user.getUserSe()));
+        menuManageVO.setTmpName(user == null ? "" : EgovStringUtil.isNullToString(user.getName()));
+        menuManageVO.setTmpEmail(user == null ? "" : EgovStringUtil.isNullToString(user.getEmail()));
+        menuManageVO.setTmpOrgnztId(user == null ? "" : EgovStringUtil.isNullToString(user.getOrgnztId()));
+        menuManageVO.setTmpUniqId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
 
-    	List<?> list_headmenu = menuManageService.selectMainMenuHead(menuManageVO);
+        List<?> list_headmenu = menuManageService.selectMainMenuHead(menuManageVO);
         model.addAttribute("list_headmenu", list_headmenu);
-		if (!(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId())).equals("")) {
-        	// 메인 페이지 이동
-        		return "egovframework/com/main_head";
+        if (!(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId())).equals("")) {
+            // 메인 페이지 이동
+            return "egovframework/com/main_head";
         } else {
-        	// 오류 페이지 이동
-        	return "egovframework/com/cmm/error/egovError";
+            // 오류 페이지 이동
+            return "egovframework/com/cmm/error/egovError";
         }
     }
 
 
     /**
      * 좌측메뉴를 조회한다.
+     *
      * @param menuManageVO MenuManageVO
      * @param vStartP      String
      * @return 출력페이지정보 "main_left"
-     * @exception Exception
+     * @throws Exception
      */
-    @RequestMapping(value="/sym/mnu/mpm/EgovMainMenuLeft.do")
+    @RequestMapping(value = "/sym/mnu/mpm/EgovMainMenuLeft.do")
     public String selectMainMenuLeft(
-    		@ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
-    		@RequestParam("vStartP") String vStartP,
-    		ModelMap model)
+            @ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
+            @RequestParam("vStartP") String vStartP,
+            ModelMap model)
             throws Exception {
-    	int iMenuNo = Integer.parseInt(vStartP);
-    	menuManageVO.setTempInt(iMenuNo);
+        int iMenuNo = Integer.parseInt(vStartP);
+        menuManageVO.setTempInt(iMenuNo);
         model.addAttribute("resultVO", menuManageVO);
 
-    	LoginVO user =
-			(LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+        LoginVO user =
+                (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
 
-    	menuManageVO.setTmpId(user == null ? "" : EgovStringUtil.isNullToString(user.getId()));
-    	menuManageVO.setTmpPassword(user == null ? "" : EgovStringUtil.isNullToString(user.getPassword()));
-    	menuManageVO.setTmpUserSe(user == null ? "" : EgovStringUtil.isNullToString(user.getUserSe()));
-    	menuManageVO.setTmpName(user == null ? "" : EgovStringUtil.isNullToString(user.getName()));
-    	menuManageVO.setTmpEmail(user == null ? "" : EgovStringUtil.isNullToString(user.getEmail()));
-    	menuManageVO.setTmpOrgnztId(user == null ? "" : EgovStringUtil.isNullToString(user.getOrgnztId()));
-    	menuManageVO.setTmpUniqId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
+        menuManageVO.setTmpId(user == null ? "" : EgovStringUtil.isNullToString(user.getId()));
+        menuManageVO.setTmpPassword(user == null ? "" : EgovStringUtil.isNullToString(user.getPassword()));
+        menuManageVO.setTmpUserSe(user == null ? "" : EgovStringUtil.isNullToString(user.getUserSe()));
+        menuManageVO.setTmpName(user == null ? "" : EgovStringUtil.isNullToString(user.getName()));
+        menuManageVO.setTmpEmail(user == null ? "" : EgovStringUtil.isNullToString(user.getEmail()));
+        menuManageVO.setTmpOrgnztId(user == null ? "" : EgovStringUtil.isNullToString(user.getOrgnztId()));
+        menuManageVO.setTmpUniqId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
 
-    	List<?> list_menulist = menuManageService.selectMainMenuLeft(menuManageVO);
+        List<?> list_menulist = menuManageService.selectMainMenuLeft(menuManageVO);
         model.addAttribute("list_menulist", list_menulist);
-      	return "egovframework/com/main_left";
+        return "egovframework/com/main_left";
     }
 
     /**
      * 우측화면을 조회한다.
+     *
      * @param menuManageVO MenuManageVO
      * @param vStartP      String
      * @return 출력페이지정보 해당URL
-     * @exception Exception
+     * @throws Exception
      */
     /*Right Menu 조회*/
-    @RequestMapping(value="/sym/mnu/mpm/EgovMainMenuRight.do")
-    public String selectMainMenuRight(
-    		@ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
-    		@RequestParam("vStartP") String vStartP,
-    		ModelMap model)
-            throws Exception {
-    	int iMenuNo = Integer.parseInt(vStartP);
-    	LoginVO user =
-			(LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+    @RequestMapping(value = "/sym/mnu/mpm/EgovMainMenuRight.do")
+    public String selectMainMenuRight(@ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
+            @RequestParam("vStartP") String vStartP,
+            ModelMap model) throws Exception {
 
-    	String forwardURL = null;
-    	forwardURL = menuManageService.selectLastMenuURL(iMenuNo, user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
-      	return "forward:"+forwardURL;
+        int iMenuNo = Integer.parseInt(vStartP);
+        LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+
+        String forwardURL = null;
+        forwardURL = menuManageService.selectLastMenuURL(iMenuNo,
+                user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
+        return "forward:" + forwardURL;
     }
 
     /**
      * HOME 메인화면 조회한다.
-     * @param menuManageVO  MenuManageVO
+     *
+     * @param menuManageVO MenuManageVO
      * @return 출력페이지정보 "EgovMainView"
-     * @exception Exception
+     * @throws Exception
      */
-    @IncludedInfo(name="포털(예제) 메인화면", order = 1, gid = 0)
-    @RequestMapping(value="/sym/mnu/mpm/EgovMainMenuHome.do")
+    @IncludedInfo(name = "포털(예제) 메인화면", order = 1, gid = 0)
+    @RequestMapping(value = "/sym/mnu/mpm/EgovMainMenuHome.do")
     public String selectMainMenuHome(
-    		@ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
-    		ModelMap model)
+            @ModelAttribute("menuManageVO") MenuManageVO menuManageVO,
+            ModelMap model)
             throws Exception {
 
-    	LoginVO user =
-			(LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+        LoginVO user =
+                (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
 
-		// 미인증 사용자에 대한 보안처리
-    	if(user == null) {
-			return "index";
-    	}
+        // 미인증 사용자에 대한 보안처리
+        if (user == null) {
+            return "index";
+        }
 
-    	menuManageVO.setTmpId(user.getId());
-    	menuManageVO.setTmpPassword(user.getPassword());
-    	menuManageVO.setTmpUserSe(user.getUserSe());
-    	menuManageVO.setTmpName(user.getName());
-    	menuManageVO.setTmpEmail(user.getEmail());
-    	menuManageVO.setTmpOrgnztId(user.getOrgnztId());
-    	menuManageVO.setTmpUniqId(user.getUniqId());
+        menuManageVO.setTmpId(user.getId());
+        menuManageVO.setTmpPassword(user.getPassword());
+        menuManageVO.setTmpUserSe(user.getUserSe());
+        menuManageVO.setTmpName(user.getName());
+        menuManageVO.setTmpEmail(user.getEmail());
+        menuManageVO.setTmpOrgnztId(user.getOrgnztId());
+        menuManageVO.setTmpUniqId(user.getUniqId());
 
-		List<?> list_headmenu = menuManageService.selectMainMenuHead(menuManageVO);
-		model.addAttribute("list_headmenu", list_headmenu);
+        List<?> list_headmenu = menuManageService.selectMainMenuHead(menuManageVO);
+        model.addAttribute("list_headmenu", list_headmenu);
 
-		LOGGER.debug("## selectMainMenuHome ## getSUserSe 1: {}", user.getUserSe());
-		LOGGER.debug("## selectMainMenuHome ## getSUserId 2: {}", user.getId());
-		LOGGER.debug("## selectMainMenuHome ## getUniqId  2: {}", user.getUniqId());
+        LOGGER.debug("## selectMainMenuHome ## getSUserSe 1: {}", user.getUserSe());
+        LOGGER.debug("## selectMainMenuHome ## getSUserId 2: {}", user.getId());
+        LOGGER.debug("## selectMainMenuHome ## getUniqId  2: {}", user.getUniqId());
 
-		if (!user.getId().equals("")) {
-        	// 메인 페이지 이동
-			return "egovframework/com/EgovMainView";
-        
+        if (!user.getId().equals("")) {
+            // 메인 페이지 이동
+            return "egovframework/com/EgovMainView";
+
         } else {
-        	// 오류 페이지 이동
-        	return "egovframework/com/cmm/error/egovError";
+            // 오류 페이지 이동
+            return "egovframework/com/cmm/error/egovError";
         }
     }
 }

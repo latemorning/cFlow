@@ -45,7 +45,7 @@ var path = "http://" + "${pageContext.request.serverName}" + ":" + "${pageContex
     <td width="250" class="title_left" >
         <div style="width:0px; height:0px;">
 		<c:forEach var="result" items="${list_menulist}" varStatus="status" >
-		<input type="hidden" name="tmp_menuNm" value="${result.menuNo}|${result.upperMenuId}|${result.menuNm}|${result.relateImagePath}|${result.relateImageNm}|${pageContext.request.contextPath}${result.chkURL}|"/>
+		<input type="hidden" name="tmp_menuNm" value="${result.menuNo}|${result.upperMenuId}|${result.menuNm}|${result.relateImagePath}|${result.relateImageNm}|${result.chkUrl}|"/>
 		</c:forEach>
 		</div>
 		<div class="tree" style="overflow: auto; position: relative; z-index: 5; padding: 0pt 0pt 0pt 0px; width: 300px;">

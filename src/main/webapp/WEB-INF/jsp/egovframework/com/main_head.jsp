@@ -35,7 +35,7 @@ var getContextPath = "${pageContext.request.contextPath}";
 </script>
 </head>
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight= "0">
-<link rel="stylesheet" type="text/css" href="<c:url value='/css/egovframework/com/common.css' />" />
+<link rel="stylesheet" type="text/css" href="<c:url value='/css/egovframework/com/sec/rnc/mip/common.css' />" />
 <link rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />" type="text/css" />
 <form name="selectOne">
 <input name="vStartP" type="hidden" />
