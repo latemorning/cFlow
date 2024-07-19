@@ -186,6 +186,9 @@ web-000004, 회원관리,      /uss/umt/.*\.do.*       회원관리에 대한 �
 web-000005, 실명확인,      /sec/rnc/.*\.do.*       실명확인에 대한 접근 제한 롤,           URL,     1
 web-000006, 우편번호,      /sym/ccm/zip/.*\.do.*   우편번호관리에 대한 접근 제한 롤,       URL,     1
 web-000007, 로그인이미지,  /uss/ion/lsi/.*\.do.*   로그인이미지관리에 대한 접근 제한 롤,   URL,     1
+
+                           /sym/mnu/mpm/.*\.do.*
+                           /dty/hnr/.*\.do.*
  */
 
 SELECT MENU_NO AS MENU_NO , MENU_ORDR AS MENU_ORDR , MENU_NM AS MENU_NM , UPPER_MENU_NO AS
@@ -215,10 +218,24 @@ UPDATE COMTECOPSEQ SET next_id = 2341 WHERE table_name = 'SYSLOG_ID';
 			FROM   COMTNMENUCREATDTLS A, COMTNMENUINFO B
 			WHERE  A.MENU_NO  = B.MENU_NO
 			AND    A.AUTHOR_CODE = (SELECT AUTHOR_CODE from COMTNEMPLYRSCRTYESTBS
-	                                WHERE  SCRTY_DTRMN_TRGET_ID = 'USRCNFRM_00000000003')
+	                                WHERE  SCRTY_DTRMN_TRGET_ID = 'USRCNFRM_00000000000')
 			ORDER BY B.MENU_ORDR;
 
-# 	</select>
 
+select count(MENU_NO)
+			from   COMTNMENUINFO
+			where  UPPER_MENU_NO = 1000000
+			and    MENU_ORDR =
+			      (select MIN(MENU_ORDR)
+			       from COMTNMENUCREATDTLS A, COMTNMENUINFO B
+			       where A.MENU_NO = B.MENU_NO
+			       AND   A.AUTHOR_CODE = (SELECT AUTHOR_CODE from COMTNEMPLYRSCRTYESTBS
+	                                      WHERE  SCRTY_DTRMN_TRGET_ID = 'USRCNFRM_00000000000')
+			       AND   B.UPPER_MENU_NO = 1000000);
 
+SELECT URL
+			FROM   COMTNPROGRMLIST
+			WHERE  PROGRM_FILE_NM =
+			       (SELECT PROGRM_FILE_NM FROM COMTNMENUINFO
+				    WHERE MENU_NO = 1);
 
