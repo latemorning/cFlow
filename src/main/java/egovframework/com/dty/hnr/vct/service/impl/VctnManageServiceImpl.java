@@ -21,7 +21,7 @@ public class VctnManageServiceImpl extends EgovAbstractServiceImpl implements Vc
 
     List<VctnManageVO> result = vctnManageDAO.selectVctnManageList(searchVO);
 
-    int num = result.size();
+//    int num = result.size();
 
 //    for (int i = 0; i < num; i++) {
 //      VcatnManageVO vcatnManageVO1 = result.get(i);
