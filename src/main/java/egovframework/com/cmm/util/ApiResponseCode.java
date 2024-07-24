@@ -16,7 +16,7 @@ public enum ApiResponseCode {
   FORBIDDEN(HttpStatus.FORBIDDEN, false, "권한이 없습니다."),
 
   // 404 Not Found
-  USER_NOT_FOUND(HttpStatus.NOT_FOUND, false, "사용자를 찾을 수 없습니다."),
+  USER_NOT_FOUND(HttpStatus.NOT_FOUND, false, "요청을 찾을 수 없습니다."),
   // 405 Method Not Allowed
   METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, false, "허용되지 않은 메소드입니다."),
 
@@ -26,6 +26,10 @@ public enum ApiResponseCode {
 
   // 500 Internal Server Error
   INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, false, "서버에 오류가 발생하였습니다."),
+
+  // 업무로직
+  YRYC_NOT_REGIST(HttpStatus.INTERNAL_SERVER_ERROR, false, "등록된 연차가 없습니다."),
+
 
   // 200 OK
   READ_SUCCESS(HttpStatus.OK, true, "조회 성공"),
