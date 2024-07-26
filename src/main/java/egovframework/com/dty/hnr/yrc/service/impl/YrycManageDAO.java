@@ -20,4 +20,8 @@ public class YrycManageDAO extends EgovComAbstractDAO {
         return selectList("yrycManageDAO.selectYrycManageList", searchVO);
     }
 
+    public YrycManageVO selectYrycManage(YrycManageVO yrycManageVO) {
+
+        return selectOne("yrycManageDAO.selectYrycManage", yrycManageVO);
+    }
 }

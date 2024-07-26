@@ -2,6 +2,8 @@ package egovframework.com.dty.hnr.yrc.service.impl;
 
 import egovframework.com.dty.hnr.yrc.service.YrycManageService;
 import egovframework.com.dty.hnr.yrc.service.YrycManageVO;
+import egovframework.com.uss.ion.vct.service.VcatnManageVO;
+import java.util.Calendar;
 import java.util.List;
 import javax.annotation.Resource;
 import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
@@ -24,6 +26,21 @@ public class YrycManageServiceImpl extends EgovAbstractServiceImpl implements Yr
     public List<YrycManageVO> selectYrycManageList(YrycManageVO searchVO) throws Exception {
 
         return yrycManageDAO.selectYrycManageList(searchVO);
+    }
+
+
+    @Override
+    public YrycManageVO selectYrycManage(String userId) throws Exception {
+
+        YrycManageVO yrycManageVO = new YrycManageVO();
+
+        Calendar cal = Calendar.getInstance();
+        String sYear = Integer.toString(cal.get(java.util.Calendar.YEAR));
+
+        yrycManageVO.setOccrrncYear(sYear);
+        yrycManageVO.setMberId(userId);
+
+        return yrycManageDAO.selectYrycManage(yrycManageVO);
     }
 
 //  @Override

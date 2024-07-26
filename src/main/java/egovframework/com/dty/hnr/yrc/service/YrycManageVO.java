@@ -26,4 +26,12 @@ public class YrycManageVO extends YrycManage implements Serializable {
 
   private String mberNm;
 
+  private String applcntId;
+
+  private String applcntNm;
+
+  private String orgnztNm;
+
+  private String usid;
+
 }

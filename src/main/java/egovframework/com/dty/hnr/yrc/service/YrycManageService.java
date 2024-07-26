@@ -6,4 +6,6 @@ public interface YrycManageService {
 
     List<YrycManageVO> selectYrycManageList(YrycManageVO searchVO) throws Exception;
 
+    YrycManageVO selectYrycManage(String userId) throws Exception;
+
 }

@@ -39,4 +39,17 @@
         </if>
     </select>
 
+
+    <select id="selectYrycManage" parameterType="egovframework.com.dty.hnr.yrc.service.YrycManageVO"
+            resultType="egovframework.com.dty.hnr.yrc.service.YrycManageVO">
+        SELECT OCCRRNC_YEAR    AS occrrncYear,
+               USER_ID         AS usid,
+               YRYC_OCCRRNC_CO AS occrncYrycCo,
+               USE_YRYC_CO     AS useYrycCo,
+               REMNDR_YRYC_CO  AS remndrYrycCo
+        FROM COMTNINDVDLYRYCMANAGE
+        WHERE OCCRRNC_YEAR = #{occrrncYear}
+          AND USER_ID = #{mberId}
+    </select>
+
 </mapper>
