@@ -89,8 +89,8 @@ function fncVcatnManageDetail(applcntId,vcatnSe,bgnde,endde){
 	var varForm				 = document.all["listForm"];
 	varForm.applcntId.value  = applcntId;
 	varForm.vcatnSe.value    = vcatnSe;
-	varForm.bgnde.value      = bgnde.replace("-","");
-	varForm.endde.value      = endde.replace("-","");
+	varForm.bgnde.value      = bgnde.replaceAll("-","");
+	varForm.endde.value      = endde.replaceAll("-","");
 	varForm.action           = "<c:url value='/uss/ion/vct/EgovVcatnManageDetail.do'/>";
 	varForm.submit();
 	}
