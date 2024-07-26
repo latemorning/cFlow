@@ -1,24 +1,3 @@
-<%
-/**
- * @Class Name : EgovVcatnManageList.java
- * @Description : EgovVcatnManageList jsp
- * @Modification Information
- * @
- * @  수정일            수정자                수정내용
- * @ ---------     --------    ---------------------------
- * @ 2010.07.20    이      용    최초 생성
- * @ 2018.08.14    최 두 영     퍼블리싱 점검
- * @ 2018.09.18    최 두 영     다국어처리
- *
- *  @author 이      용
- *  @since 2010.08.05
- *  @version 1.0
- *  @see
- *  
- *  Copyright (C) 2009 by MOPAS  All right reserved.
- */
-%>
-
 <%@ page contentType="text/html; charset=utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
@@ -33,7 +12,6 @@
 <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
 <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
 <script type="text/javaScript" language="javascript">
-<!--
 /* ********************************************************
  * 페이징 처리 함수
  ******************************************************** */
@@ -95,14 +73,15 @@ function fncVcatnManageDetail(applcntId,vcatnSe,bgnde,endde){
 	varForm.submit();
 	}
 }
--->
 </script>
 </head>
+
 <body>
+
 <noscript class="noScriptTitle"><spring:message code="common.noScriptTitle.msg" /></noscript><!-- 자바스크립트를 지원하지 않는 브라우저에서는 일부 기능을 사용하실 수 없습니다. -->
 
 <div class="board">
-	<h1><spring:message code="comUssIonVct.vcatnManageList.title"/></h1><!-- 휴가관리 목록 --><!-- 902.개인연차관리의 발생연차가 등록이 되어 있어야 사용가능 -->
+	<h1><spring:message code="comUssIonVct.vcatnManageList.title"/> VctnManageList</h1><!-- 휴가관리 목록 --><!-- 902.개인연차관리의 발생연차가 등록이 되어 있어야 사용가능 -->
 
 	<span><spring:message code="comUssIonVct.vcatnManageList.validate.guide"/></span>
 
@@ -128,7 +107,7 @@ function fncVcatnManageDetail(applcntId,vcatnSe,bgnde,endde){
 				</select><spring:message code="comUssIonVct.vcatnManageList.year"/><!-- 년 -->				
 				
 				<input class="s_btn" type="submit" value='<spring:message code="button.inquire" />' title='<spring:message code="button.inquire" />' onclick="fncSelectVcatnManageList('1'); return false;"  style="margin-left:10px" />
-				<span class="btn_b"><a href="<c:url value='/uss/ion/vct/EgovVcatnRegist.do'/>" onclick="fncVcatnRegist();" title="<spring:message code="button.create" />"><spring:message code="button.create" /></a></span>
+				<span class="btn_b"><a href="<c:url value='/dty/hnr/vct/VctnRegist.do'/>" onclick="fncVcatnRegist();" title="<spring:message code="button.create" />"><spring:message code="button.create" /></a></span>
 			</li>
 		</ul>
 	</div>
