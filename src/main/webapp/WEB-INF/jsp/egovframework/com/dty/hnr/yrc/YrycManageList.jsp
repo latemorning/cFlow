@@ -1,170 +1,177 @@
-<%
-/**
- * @Class Name : EgovVcatnManageList.java
- * @Description : EgovVcatnManageList jsp
- * @Modification Information
- * @
- * @  수정일            수정자                수정내용
- * @ ---------     --------    ---------------------------
- * @ 2010.07.20    이      용    최초 생성
- * @ 2018.08.14    최 두 영     퍼블리싱 점검
- * @ 2018.09.18    최 두 영     다국어처리
- *
- *  @author 이      용
- *  @since 2010.08.05
- *  @version 1.0
- *  @see
- *  
- *  Copyright (C) 2009 by MOPAS  All right reserved.
- */
-%>
-
-<%@ page contentType="text/html; charset=utf-8"%>
+<%@ page contentType="text/html; charset=utf-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<%@ page import="egovframework.com.utl.fcc.service.EgovDateUtil" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta http-equiv="content-type" content="text/html; charset=utf-8">
-<title><spring:message code="comUssIonVct.vcatnManageList.title"/></title><!-- 휴가관리 목록 -->
-<link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
-<link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
-<script type="text/javaScript" language="javascript">
-<!--
-/* ********************************************************
- * 페이징 처리 함수
- ******************************************************** */
- /*설명 : 휴가 목록 페이지 조회 */
- function linkPage(pageNo){
-	var varForm				 = document.all["listForm"];
-	varForm.searchCondition.value = "1";
-	varForm.pageIndex.value = pageNo;
-	varForm.action = "<c:url value='/uss/ion/vct/EgovVcatnManageList.do'/>";
-	varForm.submit();
- }
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title><spring:message code="comUssIonYrc.indvdlYrycManageList.title"/></title><!-- 개인연차관리 목록 -->
+    <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
+    <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
+    <script type="text/javaScript" language="javascript">
+        <!--
+        /* ********************************************************
+         * 등록 화면 호출 함수
+         ******************************************************** */
+        function fncIndvdlYrycRegist() {
+            location.href = "<c:url value='/uss/ion/yrc/EgovIndvdlYrycRegist.do'/>";
+        }
 
-/* ********************************************************
- * 조회 처리 
- ******************************************************** */
- /*설명 : 목록 조회 */
- function fncSelectVcatnManageList(pageNo){
-	 var varForm				 = document.all["listForm"];
-	 //varForm.searchCondition.value = "1";
-	 varForm.pageIndex.value = pageNo;
-	 varForm.action = "<c:url value='/uss/ion/vct/EgovVcatnManageList.do'/>";
-	 varForm.submit();
- }
-
-/* ********************************************************
- * 등록 화면 호출 함수 
- ******************************************************** */
-function fncVcatnRegist(){
-	var occrncYrycCo = document.getElementById("occrncYrycCo").value;
-	
-	if(!occrncYrycCo){
-		alert("<spring:message code="comUssIonVct.vcatnManageList.validate.guide"/>"); /* 902.개인연차관리의 발생연차가 등록이 되어 있어야 사용가능 */
-		return true;
-	}else if(occrncYrycCo == 0){
-		alert("<spring:message code="comUssIonVct.vcatnManageList.validate.makeVcatn"/>")/* 연차가 없습니다. 개인연차 확인이 필요합니다. */
-		location.href = "<c:url value='/uss/ion/yrc/EgovIndvdlYrycManageList.do'/>";		
-	}else{
-		location.href = "<c:url value='/uss/ion/vct/EgovVcatnRegist.do'/>";
-	}
-}
-
-/* ********************************************************
- * 상세화면 호출함수
- ******************************************************** */
-function fncVcatnManageDetail(applcntId,vcatnSe,bgnde,endde){
-	
-	var access = document.getElementById("access").value;
-	
-	if(!access || access == " "){
-		alert("<spring:message code="comUssIonVct.vcatnManageList.validate.access"/>")/* 상세화면 접근을 위해서는 사용자 권한과 조직 아이디가 필요합니다. */
-		return true;
-	}else{	
-	var varForm				 = document.all["listForm"];
-	varForm.applcntId.value  = applcntId;
-	varForm.vcatnSe.value    = vcatnSe;
-	varForm.bgnde.value      = bgnde.replace("-","");
-	varForm.endde.value      = endde.replace("-","");
-	varForm.action           = "<c:url value='/uss/ion/vct/EgovVcatnManageDetail.do'/>";
-	varForm.submit();
-	}
-}
--->
-</script>
+        -->
+    </script>
 </head>
 <body>
-<noscript class="noScriptTitle"><spring:message code="common.noScriptTitle.msg" /></noscript><!-- 자바스크립트를 지원하지 않는 브라우저에서는 일부 기능을 사용하실 수 없습니다. -->
+<noscript class="noScriptTitle"><spring:message code="common.noScriptTitle.msg"/></noscript>
 
 <div class="board">
-	<h1><spring:message code="comUssIonYrc.indvdlYrycManageList.title"/></h1><!-- 휴가관리 목록 --><!-- 902.개인연차관리의 발생연차가 등록이 되어 있어야 사용가능 -->
+    <h1><spring:message code="comUssIonYrc.indvdlYrycManageList.title"/></h1><!-- 개인연차관리 목록 -->
 
-	<span><spring:message code="comUssIonVct.vcatnManageList.validate.guide"/></span>
+    <span>${messageTemp}</span> <!-- /uss/ion/vct/web/EgovVcatnManageController.java 휴가 등록 시 개인연차가 없을 경우 메세지를 받음. -->
 
-	<form name="listForm" action="<c:url value='/uss/ion/vct/EgovVcatnManageList.do'/>" method="post">
-		<input type="hidden" id="access" value="${access}">
-		<input type="hidden" name="searchCondition">
-		<input type="hidden" name="applcntId">
-		<input type="hidden" name="vcatnSe">
-		<input type="hidden" name="bgnde">
-		<input type="hidden" name="endde">
-		<input type="hidden" id="occrncYrycCo" value="${vcatnManageVO.occrncYrycCo}">
-		<input type="hidden" name="pageIndex" value="<c:if test="${empty vcatnManageVO.pageIndex }">1</c:if><c:if test="${!empty vcatnManageVO.pageIndex }"><c:out value='${vcatnManageVO.pageIndex}'/></c:if>">
 
-	<div class="search_box" title="<spring:message code="common.searchCondition.msg" />"><!-- 이 레이아웃은 하단 정보를 대한 검색 정보로 구성되어 있습니다. -->
-		<ul>
-			<li>
-				<label for=""><spring:message code="comUssIonVct.vcatnManageList.vctYr"/> : </label><!-- 휴가연도 -->
-				<select name="searchKeyword" title="<spring:message code="comUssIonVct.vcatnManageList.vctYr"/>"><!-- 휴가연도 -->
-					<option value="" selected ><spring:message code="comUssIonVct.vcatnManageList.selectedAll"/></option><!-- 전체 -->
-					<c:forEach items="${yearList}" var="result" varStatus="status">
-					<option value="<c:out value="${result }"/>"  <c:if test="${vcatnManageVO.searchKeyword eq result}">selected</c:if>><c:out value="${result }"/></option>
-					</c:forEach>
-				</select><spring:message code="comUssIonVct.vcatnManageList.year"/><!-- 년 -->				
-				
-				<input class="s_btn" type="submit" value='<spring:message code="button.inquire" />' title='<spring:message code="button.inquire" />' onclick="fncSelectVcatnManageList('1'); return false;"  style="margin-left:10px" />
-				<span class="btn_b"><a href="<c:url value='/uss/ion/vct/EgovVcatnRegist.do'/>" onclick="fncVcatnRegist();" title="<spring:message code="button.create" />"><spring:message code="button.create" /></a></span>
-			</li>
-		</ul>
-	</div>
-</form>
-	<table class="board_list">
-		<caption></caption>
-		<colgroup>
-			<col style="width:5%" />
-			<col style="width:10%" />
-			<col style="width:15%" />
-			<col style="width:15%" />
-			<col style="" />
-			<col style="width:15%" />
-			<col style="width:10%" />
-		</colgroup>
-		<thead>
-			<tr>
-			   <th scope="col"><spring:message code="table.num" /></th><!-- 순번 -->
-			   <th scope="col"><spring:message code="comUssIonVct.vcatnManageList.vcatnSeNm"/></th><!-- 휴가구분 -->
-			   <th scope="col"><spring:message code="comUssIonVct.vcatnManageList.bgnde"/></th><!-- 시작일 -->
-			   <th scope="col"><spring:message code="comUssIonVct.vcatnManageList.endde"/></th><!-- 종료일 -->
-			   <th scope="col"><spring:message code="comUssIonVct.vcatnManageList.vcatnResn"/></th><!-- 휴가사유 -->
-			   <th scope="col"><spring:message code="comUssIonVct.vcatnManageList.confmAt"/></th><!-- 구분 -->
-			   <th scope="col"><spring:message code="comUssIonVct.vcatnManageList.sanctnerNm"/></th><!-- 승인자 -->
-			</tr>
-		</thead>
-		<tbody>
+    <div id="search-box" class="search_box" title="<spring:message code="common.searchCondition.msg" />">
+    </div>
 
-		</tbody>
-	</table>
 
-	<!-- paging navigation -->
-	<div class="pagination">
-		<ul>
-		</ul>
-	</div>
-	</div>
+    <table class="board_list">
+        <caption></caption>
+        <colgroup>
+            <col style="width:15%"/>
+            <col style="width:15%"/>
+            <col style="width:15%"/>
+            <col style="width:15%"/>
+            <col style="width:30%"/>
+        </colgroup>
+        <thead>
+        <tr>
+            <th scope="col"><spring:message code="comUssIonYrc.indvdlYrycManageList.occrrncYear"/></th><!-- 발생연도 -->
+            <th scope="col"><spring:message code="comUssIonYrc.indvdlYrycManageList.occrncYrycCo"/></th><!-- 발생연차 -->
+            <th scope="col"><spring:message code="comUssIonYrc.indvdlYrycManageList.useYrycCo"/></th><!-- 사용연차 -->
+            <th scope="col"><spring:message code="comUssIonYrc.indvdlYrycManageList.remndrYrycCo"/></th><!-- 잔여연차 -->
+            <th scope="col"><spring:message code="comUssIonYrc.indvdlYrycManageList.mberNm"/></th><!-- 사용자 -->
+        </tr>
+        </thead>
+        <tbody id="table-body">
+        </tbody>
+    </table>
+</div>
+
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script type="importmap">
+    {
+      "imports": {
+        "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+      }
+    }
+</script>
+
+<script type="module">
+    import {createApp, ref, onMounted} from 'vue'
+
+    const searchBox = createApp({
+        template: `
+          <ul>
+            <li>
+              <label for="">휴가년도 : </label>
+              <select name="searchKeyword" title="휴가년도" v-model="selectedYear">
+                <option value="">전체</option>
+                <option v-for="year in yearList" key="year" v-bind:value="year" v-bind:selected="year === selectedYear">
+                  {{ year }}
+                </option>
+              </select>년
+
+              <span class="btn_b">
+					<a href="<c:url value='/uss/ion/yrc/EgovIndvdlYrycRegist.do'/>"
+                       onclick="fncIndvdlYrycRegist(); return false;" title="">
+                        <spring:message code="button.create"/>
+					</a>
+			  </span>
+            </li>
+          </ul>
+        `
+        ,
+        setup() {
+            const yearList = ref([])
+            let selectedYear = ''
+
+            onMounted(
+                    () => {
+                        const yearDate = new Date()
+
+                        selectedYear = yearDate.getFullYear()
+
+                        for (let i = 0; i < 5; i++) {
+                            yearList.value.push(yearDate.getFullYear() - i)
+                        }
+                    }
+            )
+
+            return {
+                yearList,
+                selectedYear,
+            }
+        },
+    }).mount('#search-box')
+
+    const tableBody = createApp({
+        template: `
+          <tr v-for="item in yrycList" key="item.occrrncYear+'|'+item.userId">
+            <td>{{ item.occrrncYear }}</td>
+            <td>{{ item.occrncYrycCo }}</td>
+            <td>{{ item.useYrycCo }}</td>
+            <td>{{ item.remndrYrycCo }}</td>
+            <td>{{ item.mberNm }}</td>
+          </tr>
+          <tr v-if="yrycList.length < 1">
+            <td colspan="5"> {{ message }}</td>
+          </tr>`
+        ,
+        setup() {
+            let yrycList = ref([])
+            const message = ref('<spring:message code="info.nodata.msg" />')
+
+            const selectYrycList = async (selectedYear) => {
+
+                const form = new FormData();
+                form.append("occrrncYear", selectedYear);
+
+
+                console.log(form.values())
+
+                try {
+                    const data = await axios.get('/dty/hnr/yrc/yryc-manages', form.toString().valueOf())
+                    yrycList.value = data.data.datas
+                    // console.log('yrycList -> ', yrycList)
+                } catch (error) {
+                    console.log('error -> ', error)
+                }
+            }
+
+            onMounted(
+                    async () => {
+                        await selectYrycList('2023')
+                    }
+            )
+
+            return {
+                message,
+                yrycList,
+                selectYrycList,
+            }
+        },
+    }).mount('#table-body')
+
+</script>
+
+
 </body>
 </html>
+
+
+
+

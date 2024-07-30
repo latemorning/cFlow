@@ -16,6 +16,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.egovframe.rte.fdl.string.EgovDateUtil;
+import org.egovframe.rte.psl.dataaccess.util.EgovMap;
 import org.egovframe.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springmodules.validation.commons.DefaultBeanValidator;
 
@@ -73,7 +75,7 @@ public class YrycManageController {
 
     // 연차 목록 조회
     @ResponseBody
-    @GetMapping(value = "/dty/hnr/yrc/YrycManages")
+    @RequestMapping(value = "/dty/hnr/yrc/yryc-manages")
     public ApiResponse<Object> selectYrycManageList(@ModelAttribute YrycManageVO searchVO) throws Exception {
 
         PaginationInfo paginationInfo = new PaginationInfo();
@@ -86,8 +88,7 @@ public class YrycManageController {
 
         List<YrycManageVO> resultList = yrycManageService.selectYrycManageList(searchVO);
 
-        return ApiResponse.success(new Object[]{resultList}, paginationInfo, ApiResponseCode.READ_SUCCESS.getMessage());
-
+        return ApiResponse.success(resultList, paginationInfo, ApiResponseCode.READ_SUCCESS.getMessage());
     }
 
 
