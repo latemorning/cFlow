@@ -73,9 +73,24 @@ public class YrycManageController {
     }
 
 
+    /**
+     * 연차관리 등록 화면으로 이동한다.
+     *
+     * @param searchVO
+     * @return
+     * @throws Exception
+     */
+    @GetMapping(value = "/dty/hnr/yrc/YrycRegist.do")
+    public String insertViewYrycManage(@ModelAttribute YrycManage searchVO)
+            throws Exception {
+
+        return "egovframework/com/dty/hnr/yrc/YrycRegist";
+    }
+
+
     // 연차 목록 조회
     @ResponseBody
-    @RequestMapping(value = "/dty/hnr/yrc/yryc-manages")
+    @GetMapping(value = "/dty/hnr/yrc/yryc-manages")
     public ApiResponse<Object> selectYrycManageList(@ModelAttribute YrycManageVO searchVO) throws Exception {
 
         PaginationInfo paginationInfo = new PaginationInfo();
@@ -90,8 +105,6 @@ public class YrycManageController {
 
         return ApiResponse.success(resultList, paginationInfo, ApiResponseCode.READ_SUCCESS.getMessage());
     }
-
-
 
     /**
      * 개인연차관리정보를 관리하기 위해 등록된 개인연차관리 목록을 조회한다.

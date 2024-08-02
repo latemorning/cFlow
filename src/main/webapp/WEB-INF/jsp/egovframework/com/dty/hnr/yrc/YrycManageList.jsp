@@ -16,8 +16,8 @@
         /* ********************************************************
          * 등록 화면 호출 함수
          ******************************************************** */
-        function fncIndvdlYrycRegist() {
-            location.href = "<c:url value='/uss/ion/yrc/EgovIndvdlYrycRegist.do'/>";
+        function fncYrycRegist() {
+            location.href = "<c:url value='/dty/hnr/yrc/YrycRegist.do'/>";
         }
 
         -->
@@ -26,37 +26,7 @@
 <body>
 <noscript class="noScriptTitle"><spring:message code="common.noScriptTitle.msg"/></noscript>
 
-<div class="board">
-    <h1><spring:message code="comUssIonYrc.indvdlYrycManageList.title"/></h1><!-- 개인연차관리 목록 -->
-
-    <span>${messageTemp}</span> <!-- /uss/ion/vct/web/EgovVcatnManageController.java 휴가 등록 시 개인연차가 없을 경우 메세지를 받음. -->
-
-
-    <div id="search-box" class="search_box" title="<spring:message code="common.searchCondition.msg" />">
-    </div>
-
-
-    <table class="board_list">
-        <caption></caption>
-        <colgroup>
-            <col style="width:15%"/>
-            <col style="width:15%"/>
-            <col style="width:15%"/>
-            <col style="width:15%"/>
-            <col style="width:30%"/>
-        </colgroup>
-        <thead>
-        <tr>
-            <th scope="col"><spring:message code="comUssIonYrc.indvdlYrycManageList.occrrncYear"/></th><!-- 발생연도 -->
-            <th scope="col"><spring:message code="comUssIonYrc.indvdlYrycManageList.occrncYrycCo"/></th><!-- 발생연차 -->
-            <th scope="col"><spring:message code="comUssIonYrc.indvdlYrycManageList.useYrycCo"/></th><!-- 사용연차 -->
-            <th scope="col"><spring:message code="comUssIonYrc.indvdlYrycManageList.remndrYrycCo"/></th><!-- 잔여연차 -->
-            <th scope="col"><spring:message code="comUssIonYrc.indvdlYrycManageList.mberNm"/></th><!-- 사용자 -->
-        </tr>
-        </thead>
-        <tbody id="table-body">
-        </tbody>
-    </table>
+<div id="app" class="board">
 </div>
 
 
@@ -71,107 +41,168 @@
 </script>
 
 <script type="module">
-    import {createApp, ref, onMounted} from 'vue'
+    import {createApp, ref, onMounted, } from 'vue'
 
-    const searchBox = createApp({
+    const app = createApp({
         template: `
-          <ul>
-            <li>
-              <label for="">휴가년도 : </label>
-              <select name="searchKeyword" title="휴가년도" v-model="selectedYear">
-                <option value="">전체</option>
-                <option v-for="year in yearList" key="year" v-bind:value="year" v-bind:selected="year === selectedYear">
-                  {{ year }}
-                </option>
-              </select>년
+          <h1>개인연차관리 목록</h1>
 
-              <span class="btn_b">
-					<a href="<c:url value='/uss/ion/yrc/EgovIndvdlYrycRegist.do'/>"
-                       onclick="fncIndvdlYrycRegist(); return false;" title="">
-                        <spring:message code="button.create"/>
-					</a>
-			  </span>
-            </li>
-          </ul>
-        `
-        ,
-        setup() {
-            const yearList = ref([])
-            let selectedYear = ''
+          <SearchBox v-on:changeYear="onChangeYear" v-bind:yearArr="yearArr" v-bind:selectedYear="selectedYear" />
 
-            onMounted(
-                    () => {
-                        const yearDate = new Date()
-
-                        selectedYear = yearDate.getFullYear()
-
-                        for (let i = 0; i < 5; i++) {
-                            yearList.value.push(yearDate.getFullYear() - i)
-                        }
-                    }
-            )
-
-            return {
-                yearList,
-                selectedYear,
-            }
-        },
-    }).mount('#search-box')
-
-    const tableBody = createApp({
-        template: `
-          <tr v-for="item in yrycList" key="item.occrrncYear+'|'+item.userId">
-            <td>{{ item.occrrncYear }}</td>
-            <td>{{ item.occrncYrycCo }}</td>
-            <td>{{ item.useYrycCo }}</td>
-            <td>{{ item.remndrYrycCo }}</td>
-            <td>{{ item.mberNm }}</td>
-          </tr>
-          <tr v-if="yrycList.length < 1">
-            <td colspan="5"> {{ message }}</td>
-          </tr>`
+          <table class="board_list">
+            <caption></caption>
+            <colgroup>
+              <col style="width:15%"/>
+              <col style="width:15%"/>
+              <col style="width:15%"/>
+              <col style="width:15%"/>
+              <col style="width:30%"/>
+            </colgroup>
+            <thead>
+            <tr>
+              <th scope="col">발생연도</th>
+              <th scope="col">발생연차</th>
+              <th scope="col">사용연차</th>
+              <th scope="col">잔여연차</th>
+              <th scope="col">사용자</th>
+            </tr>
+            </thead>
+            <TableBody v-bind:yrycList="yrycList" />
+          </table>`
         ,
         setup() {
             let yrycList = ref([])
-            const message = ref('<spring:message code="info.nodata.msg" />')
-
-            const selectYrycList = async (selectedYear) => {
-
-                const form = new FormData();
-                form.append("occrrncYear", selectedYear);
-
-
-                console.log(form.values())
-
-                try {
-                    const data = await axios.get('/dty/hnr/yrc/yryc-manages', form.toString().valueOf())
-                    yrycList.value = data.data.datas
-                    // console.log('yrycList -> ', yrycList)
-                } catch (error) {
-                    console.log('error -> ', error)
-                }
-            }
+            const yearArr = ref([])
+            let occrrncYear = ref("")
+            let selectedYear = ref("")
 
             onMounted(
                     async () => {
-                        await selectYrycList('2023')
+                        const date = new Date()
+                        selectedYear.value = date.getFullYear().toString()
+
+                        for (let i = 0; i < 5; i++) {
+                            yearArr.value.push((date.getFullYear() - i).toString())
+                        }
+
+                        console.log("app.onMounted -> ", selectedYear.value)
+
+                        yrycList.value = await selectYrycList(selectedYear.value)
                     }
             )
 
+
+            const onChangeYear = async (selectedYear) => {
+                occrrncYear.value = selectedYear
+                console.log("app.onChangeYear.occrrncYear.value -> ", occrrncYear.value)
+                console.log("app.onChangeYear.selectedYear.value -> ", selectedYear)
+
+                yrycList.value = await selectYrycList(occrrncYear.value)
+            }
+
+            const selectYrycList = async (occrrncYear) => {
+
+                let uri = "?";
+                const url = "/dty/hnr/yrc/yryc-manages"
+
+                const form = new FormData();
+                form.append("occrrncYear", occrrncYear);
+
+                const entries = form.entries()
+                for (const pair of entries) {
+                    uri = uri + pair[0] + '=' + pair[1] + '&'
+                }
+
+                console.log('url => ', url + uri)
+
+                try {
+                    const data = await axios.get(url + uri)
+                    return data.data.datas
+                } catch (error) {
+                    console.log('error -> ', error)
+                    return ""
+                }
+            }
+
             return {
-                message,
+                yearArr,
                 yrycList,
-                selectYrycList,
+                selectedYear,
+                onChangeYear,
             }
         },
-    }).mount('#table-body')
+    })
 
+    app.component("SearchBox", {
+        template: `
+          <div id="search-box" class="search_box" title='<spring:message code="common.searchCondition.msg" />'>
+            <ul>
+              <li>
+                <label for="">휴가년도 : </label>
+                <select name="searchKeyword" title="휴가년도" v-model="selectedYear" v-on:change="onChangeYear">
+                  <option value="">전체</option>
+                  <option v-for="year in yearArr" key="year" v-bind:value="year"
+                          v-bind:selected="year === selectedYear">{{ year }}
+                  </option>
+                </select>년
+
+                <span class="btn_b">
+					<a href="<c:url value='/dty/hnr/yrc/YrycRegist.do'/>"
+                       onclick="fncYrycRegist(); return false;" title="">등록</a>
+			  </span>
+              </li>
+            </ul>
+          </div>`,
+        emits: ["changeYear"],
+        props: ["yearArr", "selectedYear"],
+        setup(props, ctx) {
+
+            const yearArr = ref(props.yearArr)
+            const selectedYear = ref(props.selectedYear)
+
+            const onChangeYear = () => {
+                console.log("searchBox.onChangeYear.selectedYear -> ", selectedYear.value);
+                ctx.emit('changeYear', selectedYear.value)
+            }
+
+            return {
+                onChangeYear,
+                selectedYear,
+            }
+        },
+    })
+
+    app.component("TableBody",
+            {
+                template: `
+                  <tbody>
+                  <tr v-for="item in yrycList" key="item.occrrncYear+'|'+item.userId">
+                    <td>{{ item.occrrncYear }}</td>
+                    <td>{{ item.occrncYrycCo }}</td>
+                    <td>{{ item.useYrycCo }}</td>
+                    <td>{{ item.remndrYrycCo }}</td>
+                    <td>{{ item.mberNm }}</td>
+                  </tr>
+                  <tr v-if="yrycList.length < 1">
+                    <td colspan="5"> {{ message }} </td>
+                  </tr>
+                  </tbody> `
+                ,
+                props: ['yrycList'],
+                setup(props) {
+
+                    const yrycList = ref(props.yrycList)
+
+                    const message = ref('<spring:message code="info.nodata.msg" />')
+
+                    return {
+                        message,
+                    }
+                },
+            }
+    )
+
+    app.mount('#app')
 </script>
-
-
 </body>
 </html>
-
-
-
-
