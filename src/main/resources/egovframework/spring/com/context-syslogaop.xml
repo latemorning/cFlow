@@ -7,17 +7,17 @@
 	<!--  System Log Aspect -->
 	<bean id="syslog" class="egovframework.com.sym.log.lgm.service.EgovSysLogAspect" />
 
-	<aop:config>
-		<aop:aspect id="sysLogAspect" ref="syslog">
-			<!--  insert로 시작되는 service Method -->
-			<aop:around pointcut="execution(public * egovframework.com..impl.*Impl.insert*(..))" method="logInsert" />
-			<!--  update로 시작되는 service Method -->
-			<aop:around pointcut="execution(public * egovframework.com..impl.*Impl.update*(..))" method="logUpdate" />
-			<!--  delete로 시작되는 service Method -->
-			<aop:around pointcut="execution(public * egovframework.com..impl.*Impl.delete*(..))" method="logDelete" />
-			<!--  select로 시작되는 service Method -->
-			<aop:around pointcut="execution(public * egovframework.com..impl.*Impl.select*(..))" method="logSelect" />
-		</aop:aspect>
-	</aop:config>
+<!--	<aop:config>-->
+<!--		<aop:aspect id="sysLogAspect" >-->
+			<!-- comment: insert로 시작되는 service Method -->
+<!--			<aop:around pointcut="execution(public * egovframework.com..impl.*Impl.insert*(..))" method="logInsert" />-->
+			<!-- comment: update로 시작되는 service Method -->
+<!--			<aop:around pointcut="execution(public * egovframework.com..impl.*Impl.update*(..))" method="logUpdate" />-->
+			<!-- comment: delete로 시작되는 service Method -->
+<!--			<aop:around pointcut="execution(public * egovframework.com..impl.*Impl.delete*(..))" method="logDelete" />-->
+			<!-- comment: select로 시작되는 service Method -->
+<!--			<aop:around pointcut="execution(public * egovframework.com..impl.*Impl.select*(..))" method="logSelect" />-->
+<!--		</aop:aspect>-->
+<!--	</aop:config>-->
 
 </beans>
