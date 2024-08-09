@@ -2,11 +2,11 @@ package egovframework.com.dty.hnr.yrc.service.impl;
 
 import egovframework.com.dty.hnr.yrc.service.YrycManageService;
 import egovframework.com.dty.hnr.yrc.service.YrycManageVO;
-import egovframework.com.uss.ion.vct.service.VcatnManageVO;
 import java.util.Calendar;
 import java.util.List;
 import javax.annotation.Resource;
 import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
+import org.egovframe.rte.fdl.cmmn.exception.EgovBizException;
 import org.springframework.stereotype.Service;
 
 @Service("yrycManageService")
@@ -16,7 +16,7 @@ public class YrycManageServiceImpl extends EgovAbstractServiceImpl implements Yr
     private YrycManageDAO yrycManageDAO;
 
     /**
-     * 개인 연차 조회
+     * 기본 개인 연차 목록 조회
      *
      * @param searchVO
      * @return
@@ -29,6 +29,13 @@ public class YrycManageServiceImpl extends EgovAbstractServiceImpl implements Yr
     }
 
 
+    /**
+     * vctn 에서 사용자 남은 휴가 정보 조회
+     *
+     * @param userId
+     * @return
+     * @throws Exception
+     */
     @Override
     public YrycManageVO selectYrycManage(String userId) throws Exception {
 
@@ -40,7 +47,39 @@ public class YrycManageServiceImpl extends EgovAbstractServiceImpl implements Yr
         yrycManageVO.setOccrrncYear(sYear);
         yrycManageVO.setMberId(userId);
 
-        return yrycManageDAO.selectYrycManage(yrycManageVO);
+        return yrycManageDAO.selectYrycManageList(yrycManageVO).stream().findFirst().orElseThrow(EgovBizException::new);
+    }
+
+
+    /**
+     * 수정 map 목록
+     *
+     * @param searchVO
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public List<YrycManageVO> selectYrycMapList(YrycManageVO searchVO) throws Exception {
+
+        return yrycManageDAO.selectYrycMapList(searchVO);
+    }
+
+    @Override
+    public void insertYrycManage(YrycManageVO yrycManageVO) throws Exception {
+
+        yrycManageDAO.insertYrycManage(yrycManageVO);
+    }
+
+    @Override
+    public void updtYrycManage(YrycManageVO yrycManageVO) throws Exception {
+
+        yrycManageDAO.updtYrycManage(yrycManageVO);
+    }
+
+    @Override
+    public void deleteYrycManage(YrycManageVO yrycManageVO) throws Exception {
+
+        yrycManageDAO.deleteYrycManage(yrycManageVO);
     }
 
 //  @Override

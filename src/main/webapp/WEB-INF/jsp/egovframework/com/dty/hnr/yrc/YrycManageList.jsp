@@ -172,8 +172,7 @@
         },
     })
 
-    app.component("TableBody",
-            {
+    app.component("TableBody", {
                 template: `
                   <tbody>
                   <tr v-for="item in yrycList" key="item.occrrncYear+'|'+item.userId">

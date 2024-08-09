@@ -11,6 +11,9 @@ public enum ApiResponseCode {
 
   // 400 Bad Request
   BAD_REQUEST(HttpStatus.BAD_REQUEST, false, "잘못된 요청입니다."),
+  YRYC_REGIST_OCCRNC_YRYC_CO(HttpStatus.BAD_REQUEST, false, "잔여연차 부족"),
+  USER_NOT_FOUND(HttpStatus.BAD_REQUEST, false, "사용자 정보가 없습니다."),
+  YEAR_NOT_FOUND(HttpStatus.BAD_REQUEST, false, "연도 정보가 없습니다."),
 
   // 401 Unauthorized
   UNAUTHORIZED(HttpStatus.UNAUTHORIZED, false, "권한이 없습니다."),
@@ -19,7 +22,7 @@ public enum ApiResponseCode {
   FORBIDDEN(HttpStatus.FORBIDDEN, false, "액세스가 금지되었습니다."),
 
   // 404 Not Found
-  USER_NOT_FOUND(HttpStatus.NOT_FOUND, false, "요청을 찾을 수 없습니다."),
+  NOT_FOUND(HttpStatus.NOT_FOUND, false, "요청을 찾을 수 없습니다."),
 
   // 405 Method Not Allowed
   METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, false, "허용되지 않은 메소드입니다."),
@@ -37,10 +40,16 @@ public enum ApiResponseCode {
   VCTN_THAT_YEAR_ONLY(HttpStatus.INTERNAL_SERVER_ERROR, false, "휴가는 당해연도만 가능합니다."),
   LAKE_VCTN_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, false, "잔여연차 부족"),
 
+
+  // 공통 FAIL
+  DELETE_FAIL(HttpStatus.BAD_REQUEST, false, "삭제할 데이터가 존재하지 않습니다."),
+
+
   // 200 OK
   READ_SUCCESS(HttpStatus.OK, true, "조회 성공"),
   UPDATE_SUCCESS(HttpStatus.OK, true, "수정 성공"),
   INSERT_SUCCESS(HttpStatus.OK, true, "등록 성공"),
+  DELETE_SUCCESS(HttpStatus.OK, true, "삭제 성공"),
 
   LOGIN_SUCCESS(HttpStatus.OK, true, "로그인 성공"),
 

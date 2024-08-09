@@ -37,7 +37,7 @@
 <script src="<c:url value='/js/egovframework/com/cmm/jquery.js' />"></script>
 <script src="<c:url value='/js/egovframework/com/cmm/jqueryui.js' />"></script>
 <script type="text/javascript" src="<c:url value="/validator.do"/>"></script>
-<validator:javascript formName="vcatnManage" staticJavascript="false" xhtml="true" cdata="false"/>
+<%--<validator:javascript formName="vcatnManage" staticJavascript="false" xhtml="true" cdata="false"/>--%>
 <script type="text/javaScript" language="javascript">
 <!--
 	function initCalendar(){
@@ -90,21 +90,21 @@ function fncEgovVcatnManageList(){
  
 function fncInsertEventVcatnManage() {
     var varForm = document.getElementById("vcatnManage");
-    if(varForm.bgnde.value == ""){
-        alert("<spring:message code="comUssIonVct.common.validate.bgnde"/>");/* 휴가 시작일자가 존재하지 않습니다. 휴가일자를 확인하세요. */
-        return;
-    }
-    if(varForm.vcatnSe.value != "02" && varForm.endde.value == ""){
-        alert("<spring:message code="comUssIonVct.common.validate.endde"/>");/* 휴가종료일자가 존재하지 않습니다. 휴가일자를 확인하세요. */
-        return;
-    }
+    <%--if(varForm.bgnde.value == ""){--%>
+    <%--    alert("<spring:message code="comUssIonVct.common.validate.bgnde"/>");/* 휴가 시작일자가 존재하지 않습니다. 휴가일자를 확인하세요. */--%>
+    <%--    return;--%>
+    <%--}--%>
+    <%--if(varForm.vcatnSe.value != "02" && varForm.endde.value == ""){--%>
+    <%--    alert("<spring:message code="comUssIonVct.common.validate.endde"/>");/* 휴가종료일자가 존재하지 않습니다. 휴가일자를 확인하세요. */--%>
+    <%--    return;--%>
+    <%--}--%>
     
-    if(varForm.vcatnSe.value != "02" && varForm.bgnde.value > varForm.endde.value){
-        if(varForm.vcatnSe.value != "02"){
-	        alert("<spring:message code="comUssIonVct.common.validate.vcatnSe"/>");/* 휴가일자 검색조건의 시작일자가 종료일자보다  늦습니다. 휴가일자를 확인하세요. */
-	        return;
-        }
-	}
+    <%--if(varForm.vcatnSe.value != "02" && varForm.bgnde.value > varForm.endde.value){--%>
+    <%--    if(varForm.vcatnSe.value != "02"){--%>
+	<%--        alert("<spring:message code="comUssIonVct.common.validate.vcatnSe"/>");/* 휴가일자 검색조건의 시작일자가 종료일자보다  늦습니다. 휴가일자를 확인하세요. */--%>
+	<%--        return;--%>
+    <%--    }--%>
+	<%--}--%>
 
     varForm.action = "<c:url value='/uss/ion/vct/insertVcatnManage.do'/>";
     if(confirm("<spring:message code="common.save.msg" />")){ /* 저장 하시겠습니까? */

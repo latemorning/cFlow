@@ -103,7 +103,7 @@ public class EgovPrivacyLogAspect {
 			if (data.containsKey(key) && data.get(key) != null && ! data.get(key).toString().trim().equals("")) {	// 조회된 데이터가 없으면 생략
 				list.add(target.get(key));
 				
-				LOGGER.debug("Service ('{}') : inquired data = {}", serviceName, key);
+				LOGGER.info("Service ('{}') : inquired data = {}", serviceName, key);
 			}
 		}
 		

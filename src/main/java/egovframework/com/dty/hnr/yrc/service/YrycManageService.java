@@ -8,4 +8,11 @@ public interface YrycManageService {
 
     YrycManageVO selectYrycManage(String userId) throws Exception;
 
+    List<YrycManageVO> selectYrycMapList(YrycManageVO searchVO) throws Exception;
+
+    void insertYrycManage(YrycManageVO yrycManageVO) throws Exception;
+
+    void updtYrycManage(YrycManageVO yrycManageVO) throws Exception;
+
+    void deleteYrycManage(YrycManageVO yrycManageVO) throws Exception;
 }

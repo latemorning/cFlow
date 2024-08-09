@@ -24,8 +24,6 @@ public class YrycManageVO extends YrycManage implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private String mberNm;
-
   private String applcntId;
 
   private String applcntNm;

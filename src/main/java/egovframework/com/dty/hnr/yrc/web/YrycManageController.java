@@ -1,32 +1,29 @@
 package egovframework.com.dty.hnr.yrc.web;
 
+import egovframework.com.cmm.AltibaseClobStringTypeHandler;
 import egovframework.com.cmm.LoginVO;
-import egovframework.com.cmm.annotation.IncludedInfo;
 import egovframework.com.cmm.util.ApiResponse;
 import egovframework.com.cmm.util.ApiResponseCode;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
-import egovframework.com.dty.hnr.vct.service.VctnManageVO;
 import egovframework.com.dty.hnr.yrc.service.YrycManage;
 import egovframework.com.dty.hnr.yrc.service.YrycManageService;
 import egovframework.com.dty.hnr.yrc.service.YrycManageVO;
-import egovframework.com.uss.ion.yrc.service.EgovIndvdlYrycManageService;
-import egovframework.com.uss.ion.yrc.service.IndvdlYrycManage;
-import egovframework.com.utl.fcc.service.EgovStringUtil;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import org.egovframe.rte.fdl.string.EgovDateUtil;
-import org.egovframe.rte.psl.dataaccess.util.EgovMap;
+import org.apache.commons.lang3.StringUtils;
 import org.egovframe.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springmodules.validation.commons.DefaultBeanValidator;
 
@@ -54,9 +51,10 @@ public class YrycManageController {
     @Resource(name = "yrycManageService")
     private YrycManageService yrycManageService;
 
-//    @Autowired
-//    private DefaultBeanValidator beanValidator;
+    @Autowired
+    private DefaultBeanValidator beanValidator;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(YrycManageController.class);
 
     /**
      * 연차 관리 목록 화면 이동
@@ -70,6 +68,25 @@ public class YrycManageController {
     public String yrycManageList(ModelMap model, HttpServletRequest request) throws Exception {
 
         return "egovframework/com/dty/hnr/yrc/YrycManageList";
+    }
+
+
+    // 연차 목록 조회
+    @ResponseBody
+    @GetMapping(value = "/dty/hnr/yrc/yryc-manages")
+    public ApiResponse<Object> selectYrycManageList(@ModelAttribute YrycManageVO searchVO) throws Exception {
+
+        PaginationInfo paginationInfo = new PaginationInfo();
+        setUpPaginationInfo(searchVO, paginationInfo);
+
+        LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+        if (user == null) {
+            return ApiResponse.fail(ApiResponseCode.UNAUTHORIZED, null);
+        }
+
+        List<YrycManageVO> resultList = yrycManageService.selectYrycManageList(searchVO);
+
+        return ApiResponse.success(resultList, paginationInfo, ApiResponseCode.READ_SUCCESS.getMessage());
     }
 
 
@@ -88,22 +105,114 @@ public class YrycManageController {
     }
 
 
-    // 연차 목록 조회
     @ResponseBody
-    @GetMapping(value = "/dty/hnr/yrc/yryc-manages")
-    public ApiResponse<Object> selectYrycManageList(@ModelAttribute YrycManageVO searchVO) throws Exception {
+    @GetMapping(value = "/dty/hnr/yrc/yryc-maps")
+    public ApiResponse<Object> selectYrycMapList(@ModelAttribute YrycManageVO searchVO) throws Exception {
 
         PaginationInfo paginationInfo = new PaginationInfo();
         setUpPaginationInfo(searchVO, paginationInfo);
 
         LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
         if (user == null) {
-            return ApiResponse.fail(ApiResponseCode.INTERNAL_SERVER_ERROR, null);
+            return ApiResponse.fail(ApiResponseCode.UNAUTHORIZED, null);
         }
 
-        List<YrycManageVO> resultList = yrycManageService.selectYrycManageList(searchVO);
+        List<YrycManageVO> resultList = yrycManageService.selectYrycMapList(searchVO);
 
         return ApiResponse.success(resultList, paginationInfo, ApiResponseCode.READ_SUCCESS.getMessage());
+    }
+
+
+    /**
+     * 개인별 연차 관리 등록/수정 한다.
+     *
+     * @param yrycManageVO
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @PostMapping(value = "/dty/hnr/yrc/yryc-manage")
+    public ApiResponse<Object> insertYrycManage(@ModelAttribute YrycManageVO yrycManageVO, BindingResult bindingResult
+    ) throws Exception {
+
+        yrycManageVO.setOccrrncYear(null);
+
+        beanValidator.validate(yrycManageVO, bindingResult); // validation 수행
+
+        if (bindingResult.hasErrors()) {
+
+            LOGGER.debug(bindingResult.getFieldError().getDefaultMessage());
+
+
+
+            return ApiResponse.fail(ApiResponseCode.BAD_REQUEST, null);
+        } else {
+
+            // param 확인
+            if (StringUtils.isBlank(yrycManageVO.getMberId())) {
+                return ApiResponse.fail(ApiResponseCode.USER_NOT_FOUND, null);
+            }
+            if (StringUtils.isBlank(yrycManageVO.getOccrrncYear())) {
+                return ApiResponse.fail(ApiResponseCode.YEAR_NOT_FOUND, null);
+            }
+
+            LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+            yrycManageVO.setFrstRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
+            yrycManageVO.setLastUpdusrId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
+            yrycManageVO.setRemndrYrycCo(yrycManageVO.getOccrncYrycCo() - yrycManageVO.getUseYrycCo());
+
+            List<YrycManageVO> checkResult = yrycManageService.selectYrycManageList(yrycManageVO);
+            int checkCnt = (int) checkResult.stream().count();
+
+            if (checkCnt >= 1) {
+                yrycManageService.updtYrycManage(yrycManageVO);
+            } else {
+                yrycManageService.insertYrycManage(yrycManageVO);
+            }
+
+            // update 결과 반환
+            ArrayList<YrycManageVO> result = new ArrayList<>();
+            result.add(yrycManageVO);
+
+            return ApiResponse.success(result, null, ApiResponseCode.INSERT_SUCCESS.getMessage());
+        }
+    }
+
+    /**
+     * 개인별 연차 관리 삭제
+     */
+
+    @ResponseBody
+    @PostMapping(value = "/dty/hnr/yrc/yryc-manage/delete")
+    public ApiResponse<Object> deleteYrycManage(@ModelAttribute YrycManageVO yrycManageVO) throws Exception {
+
+        LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+
+        // param 확인
+        if (StringUtils.isBlank(yrycManageVO.getMberId())) {
+            return ApiResponse.fail(ApiResponseCode.USER_NOT_FOUND, null);
+        }
+        if (StringUtils.isBlank(yrycManageVO.getOccrrncYear())) {
+            return ApiResponse.fail(ApiResponseCode.YEAR_NOT_FOUND, null);
+        }
+
+        List<YrycManageVO> checkResult = yrycManageService.selectYrycManageList(yrycManageVO);
+        int checkCnt = (int) checkResult.stream().count();
+
+        if (checkCnt >= 1) {
+            yrycManageService.deleteYrycManage(yrycManageVO);
+        } else {
+            return ApiResponse.fail(ApiResponseCode.DELETE_FAIL, null);
+        }
+
+        // delete 결과 반환
+        ArrayList<YrycManageVO> result = new ArrayList<>();
+        yrycManageVO.setUseYrycCo(0);
+        yrycManageVO.setRemndrYrycCo(0);
+        yrycManageVO.setOccrncYrycCo(0);
+        result.add(yrycManageVO);
+
+        return ApiResponse.success(result, null, ApiResponseCode.DELETE_SUCCESS.getMessage());
     }
 
     /**
@@ -211,7 +320,6 @@ public class YrycManageController {
 //
 //        return "egovframework/com/uss/ion/yrc/EgovIndvdlYrycManageList";
 //    }
-
 
     /**
      * 페이징
